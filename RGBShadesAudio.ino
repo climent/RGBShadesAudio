@@ -36,7 +36,7 @@
 //   The RGB Shades will automatically start up with the last-selected settings
 
 // RGB Shades data output to LEDs is on pin 5
-#define LED_PIN  5
+#define LED_PIN  6
 
 // RGB Shades color order (Green/Red/Blue)
 #define COLOR_ORDER GRB
@@ -62,13 +62,14 @@
 #include "font.h"
 #include "XYmap.h"
 #include "utils.h"
-#include "audio.h"
+//#include "audio.h"
+#include "audioMAX9814.h"
 #include "effects.h"
 #include "buttons.h"
 
 // list of functions that will be displayed
 functionList effectListAudio[] = {drawVU,
-                                  RGBpulse,
+                                  //                                  RGBpulse,
                                   drawAnalyzer
                                  };
 
@@ -77,16 +78,17 @@ functionList effectListNoAudio[] = {threeSine,
                                     threeDee,
                                     scrollTextZero,
                                     plasma,
-                                    RGBpulse,
+                                    //RGBpulse,
                                     confetti,
                                     rider,
                                     scrollTextOne,
                                     glitter,
-                                    drawAnalyzer,
+                                    //drawAnalyzer,
+                                    crawlAnalyzer,
                                     slantBars,
                                     scrollTextTwo,
                                     colorFill,
-                                    sideRain
+                                    sideRain,
                                    };
 
 
@@ -97,7 +99,6 @@ const byte numEffectsNoAudio = (sizeof(effectListNoAudio) / sizeof(effectListNoA
 
 // Runs one time at the start of the program (power up or reset)
 void setup() {
-
   switch (audioEnabled) {
     case true:
       numEffects = numEffectsAudio;
@@ -128,16 +129,15 @@ void setup() {
   // configure input buttons
   pinMode(MODEBUTTON, INPUT_PULLUP);
   pinMode(BRIGHTNESSBUTTON, INPUT_PULLUP);
-  pinMode(STROBEPIN, OUTPUT);
-  pinMode(RESETPIN, OUTPUT);
+  //  pinMode(STROBEPIN, OUTPUT);
+  //  pinMode(RESETPIN, OUTPUT);
 
   analogReference(DEFAULT);
 
-  digitalWrite(RESETPIN, LOW);
-  digitalWrite(STROBEPIN, HIGH);
+  //  digitalWrite(RESETPIN, LOW);
+  //  digitalWrite(STROBEPIN, HIGH);
 
-  random16_add_entropy(analogRead(ANALOGPIN));
-
+  //  random16_add_entropy(analogRead(ANALOGPIN));
 }
 
 
@@ -197,8 +197,4 @@ void loop()
   FastLED.show(); // send the contents of the led memory to the LEDs
 
 }
-
-
-
-
 

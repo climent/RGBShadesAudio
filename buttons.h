@@ -1,7 +1,7 @@
 // Process button inputs and return button activity
 
 #define NUMBUTTONS 2
-#define MODEBUTTON 4
+#define MODEBUTTON 9
 #define BRIGHTNESSBUTTON 3
 
 #define BTNIDLE 0
@@ -17,7 +17,7 @@
 
 unsigned long buttonEvents[NUMBUTTONS];
 byte buttonStatuses[NUMBUTTONS];
-byte buttonmap[NUMBUTTONS] = {BRIGHTNESSBUTTON, MODEBUTTON};
+byte buttonmap[NUMBUTTONS] = {MODEBUTTON, BRIGHTNESSBUTTON};
 extern const byte numEffectsAudio;
 extern const byte numEffectsNoAudio;
 

@@ -25,8 +25,8 @@ extern byte numEffects;
 byte cycleHue = 0;
 byte cycleHueCount = 0;
 void hueCycle(byte incr) {
-    cycleHueCount = 0;
-    cycleHue+=incr;
+  cycleHueCount = 0;
+  cycleHue += incr;
 }
 
 // Set every LED in the array to a specified color
@@ -45,98 +45,91 @@ void fadeAll(byte fadeIncr) {
 
 // Shift all pixels by one, right or left (0 or 1)
 void scrollArray(byte scrollDir) {
-  
-    byte scrollX = 0;
-    for (byte x = 1; x < kMatrixWidth; x++) {
-      if (scrollDir == 0) {
-        scrollX = kMatrixWidth - x;
-      } else if (scrollDir == 1) {
-        scrollX = x - 1;
-      }
-      
-      for (byte y = 0; y < kMatrixHeight; y++) {
-        leds[XY(scrollX,y)] = leds[XY(scrollX + scrollDir*2 - 1,y)];
-      }
+  byte scrollX = 0;
+  for (byte x = 1; x < kMatrixWidth; x++) {
+    if (scrollDir == 0) {
+      scrollX = kMatrixWidth - x;
+    } else if (scrollDir == 1) {
+      scrollX = x - 1;
     }
-  
+
+    for (byte y = 0; y < kMatrixHeight; y++) {
+      leds[XY(scrollX, y)] = leds[XY(scrollX + scrollDir * 2 - 1, y)];
+    }
+  }
+
 }
 
 
 // Pick a random palette from a list
 void selectRandomPalette() {
-
-  switch(random8(8)) {
+  switch (random8(8)) {
     case 0:
-    currentPalette = CloudColors_p;
-    break;
-    
+      currentPalette = CloudColors_p;
+      break;
+
     case 1:
-    currentPalette = LavaColors_p;
-    break;
-    
+      currentPalette = LavaColors_p;
+      break;
+
     case 2:
-    currentPalette = OceanColors_p;
-    break;
-    
+      currentPalette = OceanColors_p;
+      break;
+
     case 4:
-    currentPalette = ForestColors_p;
-    break;
-    
+      currentPalette = ForestColors_p;
+      break;
+
     case 5:
-    currentPalette = RainbowColors_p;
-    break;
-    
+      currentPalette = RainbowColors_p;
+      break;
+
     case 6:
-    currentPalette = PartyColors_p;
-    break;
-    
+      currentPalette = PartyColors_p;
+      break;
+
     case 7:
-    currentPalette = HeatColors_p;
-    break;
+      currentPalette = HeatColors_p;
+      break;
   }
 
 }
 
 // Pick a random palette from a list
 void selectRandomAudioPalette() {
-
-  switch(random8(8)) {
+  switch (random8(8)) {
     case 0:
-    currentPalette = CRGBPalette16(CRGB::Red, CRGB::Orange, CRGB::Gray);
-    break;
-    
+      currentPalette = CRGBPalette16(CRGB::Red, CRGB::Orange, CRGB::Gray);
+      break;
+
     case 1:
-    currentPalette = CRGBPalette16(CRGB::Blue, CRGB::Red, CRGB::Red);
-    break;
-    
+      currentPalette = CRGBPalette16(CRGB::Blue, CRGB::Red, CRGB::Red);
+      break;
+
     case 2:
-    currentPalette = CRGBPalette16(CRGB::LightGrey, CRGB::MidnightBlue, CRGB::Black);
-    break;
-    
+      currentPalette = CRGBPalette16(CRGB::LightGrey, CRGB::MidnightBlue, CRGB::Black);
+      break;
+
     case 4:
-    currentPalette = CRGBPalette16(CRGB::DarkGreen, CRGB::PaleGreen);
-    break;
-    
+      currentPalette = CRGBPalette16(CRGB::DarkGreen, CRGB::PaleGreen);
+      break;
+
     case 5:
-    currentPalette = RainbowColors_p;
-    break;
-    
+      currentPalette = RainbowColors_p;
+      break;
+
     case 6:
-    currentPalette = PartyColors_p;
-    break;
-    
+      currentPalette = PartyColors_p;
+      break;
+
     case 7:
-    currentPalette = HeatColors_p;
-    break;
+      currentPalette = HeatColors_p;
+      break;
   }
-
 }
-
-
 
 // Interrupt normal operation to indicate that auto cycle mode has changed
 void confirmBlink(CRGB blinkColor, byte count) {
-
   for (byte i = 0; i < count; i++) {
     fillAll(blinkColor);
     FastLED.show();
@@ -145,7 +138,6 @@ void confirmBlink(CRGB blinkColor, byte count) {
     FastLED.show();
     delay(200);
   }
-
 }
 
 // Determine flash address of text string
@@ -165,11 +157,10 @@ void loadCharBuffer(byte character) {
   } else {
     mappedCharacter = 96; // unknown character block
   }
-  
+
   for (byte i = 0; i < 5; i++) {
-    charBuffer[i] = pgm_read_byte(Font[mappedCharacter]+i);
+    charBuffer[i] = pgm_read_byte(Font[mappedCharacter] + i);
   }
-  
 }
 
 // Fetch a character value from a text string in flash
