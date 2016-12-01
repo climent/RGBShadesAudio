@@ -3,9 +3,9 @@
 #define AUDIODELAY 10
 
 // Pin definitions
-#define ANALOGPIN A0
-#define STROBEPIN 5
-#define RESETPIN  4
+#define ANALOGPIN 0
+#define STROBEPIN 8
+#define RESETPIN 7
 
 // Smooth/average settings
 #define SPECTRUMSMOOTH 0.08
@@ -89,10 +89,6 @@ void doAnalogs() {
   gainAGC = 270.0 / audioAvg;
   if (gainAGC > GAINUPPERLIMIT) gainAGC = GAINUPPERLIMIT;
   if (gainAGC < GAINLOWERLIMIT) gainAGC = GAINLOWERLIMIT;
-
-
-
-
 
 }
 

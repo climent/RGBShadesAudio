@@ -328,7 +328,50 @@ void scrollTextTwo() {
   scrollText(2, NORMAL, CRGB::Green, CRGB(0, 0, 8));
 }
 
+#define analyzerFadeFactor 5
+#define analyzerScaleFactor 1.5
+#define analyzerPaletteFactor 2
+int panel[16] = {0};
+long unsigned updated;
 
+void crawlAnalyzer() {
+  // startup tasks
+  if (effectInit == false) {
+    effectInit = true;
+    effectDelay = 10;
+    selectRandomAudioPalette();
+  }
+  CRGB pixelColor;
+  long unsigned now = millis();
+
+  if (now - updated > 50) {
+    panel[0] = spectrumDecay[0];
+    for (byte x = kMatrixWidth; x > 0; x--) {
+      panel[x] = panel[x - 1];
+    }
+    updated = millis();
+  }
+  const float yScale = 255.0 / kMatrixHeight;
+
+  for (byte x = 0; x < kMatrixWidth ; x++) {
+    int freqVal = panel[x];
+    for (byte y = 0; y < kMatrixHeight; y++) {
+
+      int senseValue = freqVal / analyzerScaleFactor - yScale * (kMatrixHeight - 1 - y);
+      int pixelBrightness = senseValue * analyzerFadeFactor;
+      if (pixelBrightness > 255) pixelBrightness = 255;
+      if (pixelBrightness < 0) pixelBrightness = 0;
+
+      int pixelPaletteIndex = senseValue / analyzerPaletteFactor - 15;
+      if (pixelPaletteIndex > 240) pixelPaletteIndex = 240;
+      if (pixelPaletteIndex < 0) pixelPaletteIndex = 0;
+
+      pixelColor = ColorFromPalette(currentPalette, pixelPaletteIndex, pixelBrightness);
+
+      leds[XY(x, y)] = pixelColor;
+    }
+  }
+}
 
 #define analyzerFadeFactor 5
 #define analyzerScaleFactor 1.5
@@ -350,27 +393,23 @@ void drawAnalyzer() {
     int freqVal;
     if (x < 2) {
       newX = 0;
-      freqVal = spectrumDecay[newX] / 2;
+      freqVal = spectrumDecay[newX];
     } else {
       newX = x - 1;
       freqVal = spectrumDecay[newX];
     }
 
     for (byte y = 0; y < kMatrixHeight; y++) {
-      if (x > 6) {
-        pixelColor = ColorFromPalette(currentPalette, 0, 0);
-      } else {
-        int senseValue = freqVal / analyzerScaleFactor - yScale * (kMatrixHeight - 1 - y);
-        int pixelBrightness = senseValue * analyzerFadeFactor;
-        if (pixelBrightness > 255) pixelBrightness = 255;
-        if (pixelBrightness < 0) pixelBrightness = 0;
+      int senseValue = freqVal / analyzerScaleFactor - yScale * (kMatrixHeight - 1 - y);
+      int pixelBrightness = senseValue * analyzerFadeFactor;
+      if (pixelBrightness > 255) pixelBrightness = 255;
+      if (pixelBrightness < 0) pixelBrightness = 0;
 
-        int pixelPaletteIndex = senseValue / analyzerPaletteFactor - 15;
-        if (pixelPaletteIndex > 240) pixelPaletteIndex = 240;
-        if (pixelPaletteIndex < 0) pixelPaletteIndex = 0;
+      int pixelPaletteIndex = senseValue / analyzerPaletteFactor - 15;
+      if (pixelPaletteIndex > 240) pixelPaletteIndex = 240;
+      if (pixelPaletteIndex < 0) pixelPaletteIndex = 0;
 
-        pixelColor = ColorFromPalette(currentPalette, pixelPaletteIndex, pixelBrightness);
-      }
+      pixelColor = ColorFromPalette(currentPalette, pixelPaletteIndex, pixelBrightness);
       leds[XY(x, y)] = pixelColor;
       leds[XY(kMatrixWidth - x - 1, y)] = pixelColor;
     }
@@ -425,37 +464,37 @@ void drawVU() {
 }
 
 
-void RGBpulse() {
-
-  // startup tasks
-  if (effectInit == false) {
-    effectInit = true;
-    effectDelay = 1;
-  }
-
-  static byte RGBcycle = 0;
-
-  fadeAll(1);
-
-  if (beatDetect()) {
-
-    switch (RGBcycle) {
-      case 0:
-        fillAll(CRGB::Red);
-        break;
-      case 1:
-        fillAll(CRGB::Lime);
-        break;
-      case 2:
-        fillAll(CRGB::Blue);
-        break;
-    }
-
-    RGBcycle++;
-    if (RGBcycle > 2) RGBcycle = 0;
-  }
-
-}
+//void RGBpulse() {
+//
+//  // startup tasks
+//  if (effectInit == false) {
+//    effectInit = true;
+//    effectDelay = 1;
+//  }
+//
+//  static byte RGBcycle = 0;
+//
+//  fadeAll(1);
+//
+//  if (beatDetect()) {
+//
+//    switch (RGBcycle) {
+//      case 0:
+//        fillAll(CRGB::Red);
+//        break;
+//      case 1:
+//        fillAll(CRGB::Lime);
+//        break;
+//      case 2:
+//        fillAll(CRGB::Blue);
+//        break;
+//    }
+//
+//    RGBcycle++;
+//    if (RGBcycle > 2) RGBcycle = 0;
+//  }
+//
+//}
 
 const int heart0[] = {94, 95, 108, 109, 123, 124};
 const int heart1[] = {78, 79, 80, 93, 96, 107, 110, 122, 125, 136, 137, 138};
