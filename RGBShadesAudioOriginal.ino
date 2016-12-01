@@ -36,7 +36,7 @@
 //   The RGB Shades will automatically start up with the last-selected settings
 
 // RGB Shades data output to LEDs is on pin 5
-#define LED_PIN  5
+#define LED_PIN  8
 
 // RGB Shades color order (Green/Red/Blue)
 #define COLOR_ORDER GRB
@@ -60,7 +60,7 @@
 #include <EEPROM.h>
 #include "messages.h"
 #include "font.h"
-#include "XYmap.h"
+#include "XYmap_panel.h"
 #include "utils.h"
 #include "audio.h"
 #include "effects.h"
@@ -72,21 +72,19 @@ functionList effectListAudio[] = {drawVU,
                                   drawAnalyzer
                                  };
 
-functionList effectListNoAudio[] = {threeSine,
+functionList effectListNoAudio[] = {heartPulse,
+                                    threeSine,
                                     drawVU,
                                     threeDee,
-                                    scrollTextZero,
                                     plasma,
                                     RGBpulse,
                                     confetti,
                                     rider,
-                                    scrollTextOne,
                                     glitter,
                                     drawAnalyzer,
                                     slantBars,
-                                    scrollTextTwo,
                                     colorFill,
-                                    sideRain
+                                    sideRain,
                                    };
 
 
@@ -139,8 +137,6 @@ void setup() {
   random16_add_entropy(analogRead(ANALOGPIN));
 
 }
-
-
 
 // Runs over and over until power off or reset
 void loop()

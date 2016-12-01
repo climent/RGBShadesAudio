@@ -178,7 +178,7 @@ void threeDee() {
     for (byte y = 0; y < kMatrixHeight; y++) {
       if (x < 7) {
         leds[XY(x, y)] = CRGB::Blue;
-      } else if (x > 8) {
+      } else if (x > 7) {
         leds[XY(x, y)] = CRGB::Red;
       } else {
         leds[XY(x, y)] = CRGB::Black;
@@ -186,8 +186,8 @@ void threeDee() {
     }
   }
 
-  leds[XY(6, 0)] = CRGB::Black;
-  leds[XY(9, 0)] = CRGB::Black;
+  //  leds[XY(6, 0)] = CRGB::Black;
+  //  leds[XY(9, 0)] = CRGB::Black;
 
 }
 
@@ -287,7 +287,7 @@ void scrollText(byte message, byte style, CRGB fgColor, CRGB bgColor) {
     for (byte y = 0; y < 5; y++) { // characters are 5 pixels tall
       if (bitRead(bitBuffer[(bitBufferPointer + x) % kMatrixWidth], y) == 1) {
         if (style == RAINBOW) {
-          pixelColor = ColorFromPalette(currentPalette, paletteCycle+y*16, 255);
+          pixelColor = ColorFromPalette(currentPalette, paletteCycle + y * 16, 255);
         } else {
           pixelColor = fgColor;
         }
@@ -325,7 +325,7 @@ void scrollTextOne() {
 }
 
 void scrollTextTwo() {
-  scrollText(2, NORMAL, CRGB::Green, CRGB(0,0,8));
+  scrollText(2, NORMAL, CRGB::Green, CRGB(0, 0, 8));
 }
 
 
@@ -355,7 +355,7 @@ void drawAnalyzer() {
       newX = x - 1;
       freqVal = spectrumDecay[newX];
     }
-    
+
     for (byte y = 0; y < kMatrixHeight; y++) {
       if (x > 6) {
         pixelColor = ColorFromPalette(currentPalette, 0, 0);
@@ -374,6 +374,10 @@ void drawAnalyzer() {
       leds[XY(x, y)] = pixelColor;
       leds[XY(kMatrixWidth - x - 1, y)] = pixelColor;
     }
+  }
+  if (kMatrixWidth % 2 == 1) {
+    byte x = kMatrixWidth / 2;
+    for (byte y = 0; y < kMatrixHeight; y++) leds[XY(x, y)] = CRGB::Black;
   }
 
 
@@ -413,6 +417,10 @@ void drawVU() {
     }
   }
 
+  if (kMatrixWidth % 2 == 1) {
+    byte x = kMatrixWidth / 2;
+    for (byte y = 0; y < kMatrixHeight; y++) leds[XY(x, y)] = CRGB::Black;
+  }
 
 }
 
@@ -447,5 +455,79 @@ void RGBpulse() {
     if (RGBcycle > 2) RGBcycle = 0;
   }
 
+}
+
+const int heart0[] = {94, 95, 108, 109, 123, 124};
+const int heart1[] = {78, 79, 80, 93, 96, 107, 110, 122, 125, 136, 137, 138};
+const int heart2[] = {65, 66, 67, 77, 81, 92, 111, 121, 135, 139, 152, 153, 154};
+const int heart3[] = {48, 49, 50, 51, 64, 68, 76, 82, 91, 97, 106, 112, 120, 126, 134, 140, 151, 155, 164, 165, 166, 167};
+const int heart4[] = {36, 37, 38, 39, 47, 52, 63, 69, 83, 90, 113, 119, 141, 150, 156, 163, 168, 181, 182, 183, 184};
+const int heart5[] = {18, 19, 20, 21, 35, 40, 46, 53, 62, 70, 75, 84, 89, 98, 105, 114, 118, 127, 133, 142, 149, 157, 162, 169, 180, 185, 192, 193, 194, 195};
+const int heart6[] = {8, 9, 10, 11, 17, 22, 34, 41, 45, 54, 61, 71, 74, 85, 88, 99, 104, 115, 117, 128, 132, 143, 148, 158, 161, 170, 179, 186, 191, 196, 211, 212, 213, 214};
+
+void heartPulse() {
+  // startup tasks
+  if (effectInit == false) {
+    effectInit = true;
+    effectDelay = 10;
+    selectRandomAudioPalette();
+    for (int i = 0; i < 218; i++) leds[i] = CRGB::Black;
+  }
+
+  CRGB pixelColor;
+
+  const float xScale = 255.0 / 7;
+  float specCombo = (spectrumDecay[0] + spectrumDecay[1] + spectrumDecay[2] + spectrumDecay[3]) / 4.0;
+
+  for (byte x = 0; x < 7; x++) {
+    int senseValue = specCombo / VUScaleFactor - xScale * x;
+    int pixelBrightness = senseValue * VUFadeFactor;
+    if (pixelBrightness > 255) pixelBrightness = 255;
+    if (pixelBrightness < 0) pixelBrightness = 0;
+
+    int pixelPaletteIndex = senseValue / VUPaletteFactor - 15;
+    if (pixelPaletteIndex > 240) pixelPaletteIndex = 240;
+    if (pixelPaletteIndex < 0) pixelPaletteIndex = 0;
+
+    pixelColor = ColorFromPalette(currentPalette, pixelPaletteIndex, pixelBrightness);
+
+    switch (x) {
+      case 0:
+        for (int i = 0; i < 6; i++) {
+          leds[heart0[i]] = pixelColor;
+        }
+        break;
+      case 1:
+        for (int i = 0; i < 12; i++) {
+          leds[heart1[i]] = pixelColor;
+        }
+        break;
+      case 2:
+        for (int i = 0; i < 13; i++) {
+          leds[heart2[i]] = pixelColor;
+        }
+        break;
+      case 3:
+        for (int i = 0; i < 22; i++) {
+          leds[heart3[i]] = pixelColor;
+        }
+        break;
+      case 4:
+        for (int i = 0; i < 21; i++) {
+          leds[heart4[i]] = pixelColor;
+        }
+        break;
+      case 5:
+        for (int i = 0; i < 30; i++) {
+          leds[heart5[i]] = pixelColor;
+        }
+        break;
+      case 6:
+        for (int i = 0; i < 34; i++) {
+          leds[heart6[i]] = pixelColor;
+        }
+        break;
+    }
+  }
 }
 
